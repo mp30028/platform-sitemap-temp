@@ -27,7 +27,7 @@ jobs:
         run: |
             suffix="${{ steps.generated_timestamp.outputs.value }}";
             prefix="${FILENAME%.*}";
-            extension="${prefix##*.}"            
+            extension="${FILENAME##*.}"            
             echo "value=$prefix-$suffix.$extension" >> $GITHUB_OUTPUT;
 
 #  create-swot-sitemap-release:
@@ -75,4 +75,4 @@ jobs:
         run: |
           echo "FILENAME = $FILENAME";
           #echo "FILENAME_EXTENSION = $FILENAME_EXTENSION";
-          echo "filename = ${{ needs.generate-filename.outputs.release_filename }}";
+          echo "release_filename = ${{ needs.generate-filename.outputs.release_filename }}";
