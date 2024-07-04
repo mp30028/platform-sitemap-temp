@@ -1,8 +1,8 @@
 name: Deploy swot-sitemap
 
 env:
-  FILENAME_PREFIX: sitemap
-  FILENAME_EXTENSION: xml
+  FILENAME: sitemap.xml
+  FILE_LOCATION: ./swot-sitemap
 
 on:
  workflow_dispatch:
@@ -12,7 +12,7 @@ jobs:
   generate-filename:
     runs-on: ubuntu-latest
     outputs:
-      filename: ${{ steps.filename.outputs.value }}
+      release_filename: ${{ steps.filename.outputs.value }}
     steps:    
       - name: Generate Timestamp
         id: generated_timestamp
@@ -26,7 +26,44 @@ jobs:
         shell: bash
         run: |
             suffix="${{ steps.generated_timestamp.outputs.value }}";
-            echo "value=$FILENAME_PREFIX-$suffix.$FILENAME_EXTENSION" >> $GITHUB_OUTPUT;
+            prefix="${FILENAME%.*}";
+            extension="${prefix##*.}"            
+            echo "value=$prefix-$suffix.$extension" >> $GITHUB_OUTPUT;
+
+#  create-swot-sitemap-release:
+#    needs: [generate-filename]
+#    runs-on: ubuntu-latest
+#    steps:    
+#
+#      - name: Checkout this repository
+#        uses: actions/checkout@v3  
+#
+#      - name: Make staging directory
+#        shell: bash
+#        run: sudo mkdir -p /staging/${{ inputs.application-name }}
+#      
+#    - name: Copy the tested and built jar to staging
+#      id: staged_artifacts
+#      shell: bash
+#      run: |
+#        package_name="${{ steps.package_name.outputs.value }}";
+#        staging_path="/staging/${{ inputs.application-name }}";
+#        echo "pwd = $(pwd)";
+#        echo "source-location = $(ls -l ${{ inputs.source-location}})";
+#        echo "target = $(ls -l ${{ inputs.source-location}}/target/*.jar)";
+#        #sudo cp ${{ inputs.source-location}}/target/*.jar /staging/${{ inputs.application-name }}/${package_name};
+#        sudo cp ${{ inputs.source-location}}/target/*.jar ${staging_path}/${package_name};
+#        #echo "staging = $(ls -l /staging/${{ inputs.application-name }}/${package_name})";
+#        echo "staging = $(ls -l ${staging_path}/${package_name})";
+#        echo "path=$staging_path" >> $GITHUB_OUTPUT;
+#      
+#    - name: Package and upload the jar to GitHub packages
+#      uses: actions/upload-artifact@v4
+#      with:
+#        name: ${{ steps.package_name.outputs.value }}
+#        path: ${{ steps.staged_artifacts.outputs.path }}
+#        compression-level: 0 # no compression
+#
             
   print-details:
     needs: [generate-filename]
@@ -36,6 +73,6 @@ jobs:
         id: printed_details
         shell: bash
         run: |
-          echo "FILENAME_PREFIX = $FILENAME_PREFIX";
-          echo "FILENAME_EXTENSION = $FILENAME_EXTENSION";
-          echo "filename = ${{ needs.generate-filename.outputs.filename }}";
+          echo "FILENAME = $FILENAME";
+          #echo "FILENAME_EXTENSION = $FILENAME_EXTENSION";
+          echo "filename = ${{ needs.generate-filename.outputs.release_filename }}";
