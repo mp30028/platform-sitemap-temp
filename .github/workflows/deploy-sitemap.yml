@@ -11,7 +11,8 @@ on:
 jobs:
   generate-filename:
     runs-on: ubuntu-latest
-
+    outputs:
+      filename: ${{ steps.filename.outputs.value }}
     steps:    
       - name: Generate Timestamp
         id: generated_timestamp
@@ -28,6 +29,7 @@ jobs:
             echo "value=$FILENAME_PREFIX-$suffix.$FILENAME_EXTENSION" >> $GITHUB_OUTPUT;
             
   print-details:
+    needs: [generate-filename]
     runs-on: ubuntu-latest
     steps:
       - name: Print Details
@@ -36,5 +38,4 @@ jobs:
         run: |
           echo "FILENAME_PREFIX = $FILENAME_PREFIX";
           echo "FILENAME_EXTENSION = $FILENAME_EXTENSION";
-          echo "filename_suffix = ${{ steps.generated_timestamp.outputs.value }} ";
-          echo "filename = ${{ steps.filename.outputs.value }} ";
+          echo "filename = ${{ needs.generate-filename.outputs.filename }}";
