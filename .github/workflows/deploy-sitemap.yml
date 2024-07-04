@@ -9,7 +9,7 @@ on:
  
 
 jobs:
-  generate-filename-suffix:
+  generate-filename:
     runs-on: ubuntu-latest
 
     steps:    
@@ -26,9 +26,12 @@ jobs:
         run: |
             suffix="${{ steps.generated_timestamp.outputs.value }}";
             echo "value=$FILENAME_PREFIX-$suffix.$FILENAME_EXTENSION" >> $GITHUB_OUTPUT;
-
+            
+  print-details:
+    runs-on: ubuntu-latest
+    steps:
       - name: Print Details
-        id: printed_details      
+        id: printed_details
         shell: bash
         run: |
           echo "FILENAME_PREFIX = $FILENAME_PREFIX";
