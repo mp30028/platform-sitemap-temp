@@ -18,7 +18,7 @@ jobs:
         id: generated_timestamp
         shell: bash
         run: |
-            timestamp=$(date +'%Y%m%d.%H%M%S');
+            timestamp=$(date +'%Y%m%d-%H%M%S');
             echo "value=$timestamp" >> $GITHUB_OUTPUT;
 
       - name: Build Filename
