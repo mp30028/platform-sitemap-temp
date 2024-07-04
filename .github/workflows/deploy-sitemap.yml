@@ -11,11 +11,10 @@ on:
 jobs:
   generate-filename-suffix:
     runs-on: ubuntu-latest
-    outputs:
-      filename_suffix: ${{ steps.generate-timestamp.outputs.value }}   
+
     steps:    
-      - name: generate-timestamp
-        id: generate-timestamp
+      - name: Generate Timestamp
+        id: generated-timestamp
         shell: bash
         run: |
             timestamp=$(date +'%Y%m%d.%H%M%S');
@@ -24,6 +23,8 @@ jobs:
             
       - name: print details
         id: printed_details
+        with:
+          generated-timestamp: ${{ steps.generated-timestamp.outputs.value }}        
         shell: bash    
         run: |
-          echo "filename_suffix = ${{ steps.generate-timestamp.outputs.filename_suffix }}";
+          echo "filename_suffix = ${{ steps.generated-timestamp.outputs.value }}";
