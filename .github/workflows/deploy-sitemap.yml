@@ -14,17 +14,15 @@ jobs:
 
     steps:    
       - name: Generate Timestamp
-        id: generated-timestamp
+        id: generated_timestamp
         shell: bash
         run: |
             timestamp=$(date +'%Y%m%d.%H%M%S');
             echo "$timestamp";
             echo "value=$timestamp" >> $GITHUB_OUTPUT;
             
-      - name: print details
-        id: printed_details
-        with:
-          generated-timestamp: ${{ steps.generated-timestamp.outputs.value }}        
-        shell: bash    
+      - name: Print Details
+        id: printed_details      
+        shell: bash
         run: |
-          echo "filename_suffix = ${{ steps.generated-timestamp.outputs.value }}";
+          echo "filename_suffix = ${{ steps.generated_timestamp.outputs.value }} ";
