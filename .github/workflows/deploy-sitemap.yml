@@ -50,6 +50,12 @@ jobs:
           # ls -l /staging;
           # cat /staging/${{ needs.generate-filename.outputs.release_filename }};
 
+      - name: Upload release-sitemap to GitHub packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ needs.generate-filename.outputs.release_filename }}
+          path: /staging
+          compression-level: 0 # no compression
             
   print-details:
     needs: [generate-filename]
