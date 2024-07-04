@@ -48,6 +48,7 @@ jobs:
         run: |
           sudo cp ${FILE_LOCATION}/${FILENAME} /staging/${{ needs.generate-filename.outputs.release_filename }};
           ls -l /staging;
+          cat /staging/${{ needs.generate-filename.outputs.release_filename }};
 
             
   print-details:
