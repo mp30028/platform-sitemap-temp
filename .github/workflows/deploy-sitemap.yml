@@ -18,11 +18,20 @@ jobs:
         shell: bash
         run: |
             timestamp=$(date +'%Y%m%d.%H%M%S');
-            echo "$timestamp";
             echo "value=$timestamp" >> $GITHUB_OUTPUT;
-            
+
+      - name: Build Filename
+        id: filename        
+        shell: bash
+        run: |
+            suffix="${{ steps.generated_timestamp.outputs.value }}";
+            echo "value=$FILENAME_PREFIX-$suffix.$FILENAME_EXTENSION" >> $GITHUB_OUTPUT;
+
       - name: Print Details
         id: printed_details      
         shell: bash
         run: |
+          echo "FILENAME_PREFIX = $FILENAME_PREFIX";
+          echo "FILENAME_EXTENSION = $FILENAME_EXTENSION";
           echo "filename_suffix = ${{ steps.generated_timestamp.outputs.value }} ";
+          echo "filename = ${{ steps.filename.outputs.value }} ";
