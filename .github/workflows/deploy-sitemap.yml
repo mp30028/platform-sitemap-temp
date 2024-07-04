@@ -26,4 +26,4 @@ jobs:
         id: printed_details
         shell: bash    
         run: |
-          echo "filename-suffix = ${{ steps.filename_suffix.outputs.value }}";
+          echo "filename_suffix = ${{ steps.generate-timestamp.outputs.filename_suffix }}";
