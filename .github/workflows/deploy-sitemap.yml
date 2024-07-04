@@ -1,0 +1,28 @@
+name: Deploy swot-sitemap
+
+env:
+  FILENAME_PREFIX: sitemap
+  FILENAME_EXTENSION: xml
+
+on:
+ workflow_dispatch:
+ 
+
+jobs:
+  generate-filename-suffix:
+    runs-on: ubuntu-latest
+    outputs:
+      filename_suffix: ${{ steps.generate-timestamp.outputs.value }}   
+    steps:    
+      - name: generate-timestamp
+        id: generate-timestamp
+        shell: bash
+        run: |
+            timestamp=$(date +'%Y%m%d.%H%M%S');
+            echo "value=$timestamp" >> $GITHUB_OUTPUT;
+            
+      - name: print details
+        id: printed_details
+        shell: bash    
+        run: |
+          echo "filename-suffix = ${{ steps.filename_suffix.outputs.value }}";
