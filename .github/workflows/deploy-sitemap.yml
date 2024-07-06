@@ -59,7 +59,7 @@ jobs:
   
   copy-sitemap-to-remote:
 #    if: ${{ github.ref_name == 'main' && github.event_name == 'push' }}
-    needs: [generate-filename]    
+    needs: [ create-release-sitemap]    
     runs-on: ubuntu-latest
     steps:
       - name: Checkout this repository
