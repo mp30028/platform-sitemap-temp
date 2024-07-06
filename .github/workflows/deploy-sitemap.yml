@@ -77,7 +77,7 @@ jobs:
 
 
       - name: sftp staged artifacts to remote
-        uses: .github/actions/sftp-to-remote@main
+        uses: mp30028/platform-sitemap-temp/.github/actions/sftp-to-remote@seed_with_artifacts_from_platform-sitemap
         with:
           remote_username: ${{ secrets.REMOTE_USERNAME  }}
           remote_host: ${{ secrets.REMOTE_SERVER  }}
