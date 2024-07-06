@@ -2,7 +2,7 @@ name: Deploy swot-sitemap
 
 env:
   FILENAME: sitemap.xml
-  FILE_LOCATION: ./swot-sitemap
+  FILE_LOCATION: swot-sitemap
 
 on:
  workflow_dispatch:
@@ -46,7 +46,7 @@ jobs:
         id: staged_artifacts
         shell: bash
         run: |
-          sudo cp ${FILE_LOCATION}/${FILENAME} /staging/${{ needs.generate-filename.outputs.release_filename }};
+          sudo cp ./${FILE_LOCATION}/${FILENAME} /staging/${{ needs.generate-filename.outputs.release_filename }};
           # ls -l /staging;
           # cat /staging/${{ needs.generate-filename.outputs.release_filename }};
 
