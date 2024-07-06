@@ -97,7 +97,7 @@ jobs:
           remote_cmd: |
             #cd ${{ env.FILE_LINK_LOCATION }}; 
             rm ${{ env.FILE_LINK_LOCATION }}/${{ env.FILE_LINK }};
-            ln ${{ vars.REMOTE_FILEPATH }}/${{ env.FILE_LOCATION }}/${{ needs.generate-filename.outputs.release_filename }} ${{ env.FILE_LINK_LOCATION }}/${{ env.FILE_LINK }};  
+            ln -s ${{ vars.REMOTE_FILEPATH }}/${{ env.FILE_LOCATION }}/${{ needs.generate-filename.outputs.release_filename }} ${{ env.FILE_LINK_LOCATION }}/${{ env.FILE_LINK }};  
   
             
 #  print-details:
