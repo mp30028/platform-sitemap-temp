@@ -61,7 +61,7 @@ jobs:
   
   push-release-to-remote:
 #    if: ${{ github.ref_name == 'main' && github.event_name == 'push' }}
-    needs: [generate-filename, create-releases]    
+    needs: [generate-filename, create-release]    
     runs-on: ubuntu-latest
     steps:
       - name: Checkout this repository
