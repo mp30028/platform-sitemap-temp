@@ -3,7 +3,7 @@ name: Deploy swot-sitemap
 env:
   FILENAME: sitemap.xml
   FILE_LOCATION: swot-sitemap
-  FILE_LINK_LOCATION: /mnt/zonesoft-volume-2/data/api-storage/
+  FILE_LINK_LOCATION: /mnt/zonesoft-volume-2/data/api-storage
   FILE_LINK: sitemap.xml.current-sitemap.UPLOADED
 
 on:
@@ -95,9 +95,9 @@ jobs:
           remote_port: ${{ secrets.REMOTE_PORT  }}
           remote_ssh_key: ${{ secrets.REMOTE_SSH_KEY  }}
           remote_cmd: |
-            cd ${{ env.FILE_LINK_LOCATION }}; 
-            rm ./${{ env.FILE_LINK }};
-            ln ${{vars.REMOTE_FILEPATH}}/${{env.FILE_LOCATION}}/${{needs.generate-filename.outputs.release_filename}} ./${{env.FILE_LINK}};  
+            #cd ${{ env.FILE_LINK_LOCATION }}; 
+            rm ${{ env.FILE_LINK_LOCATION }}/${{ env.FILE_LINK }};
+            ln ${{ vars.REMOTE_FILEPATH }}/${{ env.FILE_LOCATION }}/${{ needs.generate-filename.outputs.release_filename }} ${{ env.FILE_LINK_LOCATION }}/${{ env.FILE_LINK }};  
   
             
 #  print-details:
