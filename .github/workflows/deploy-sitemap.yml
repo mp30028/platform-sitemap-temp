@@ -56,6 +56,48 @@ jobs:
           name: ${{ needs.generate-filename.outputs.release_filename }}
           path: /staging
           compression-level: 0 # no compression
+  
+  copy-sitemap-to-remote:
+#    if: ${{ github.ref_name == 'main' && github.event_name == 'push' }}
+    needs: [generate-filename]    
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout this repository
+        uses: actions/checkout@v3
+        
+      - name: Make staging directory
+        run:  |
+          mkdir -p staging/${{ env.FILE_LOCATION }}
+        
+      - name: Download the released sitemap to staging
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ needs.generate-filename.outputs.release_filename }}
+          path: /staging/${{ env.FILE_LOCATION }}
+
+
+      - name: sftp staged artifacts to remote
+        uses: .github/actions/sftp-to-remote@main
+        with:
+          remote_username: ${{ secrets.REMOTE_USERNAME  }}
+          remote_host: ${{ secrets.REMOTE_SERVER  }}
+          remote_port: ${{ secrets.REMOTE_PORT  }}
+          remote_ssh_key: ${{ secrets.REMOTE_SSH_KEY  }}
+          local_filepath: staging/${{ env.FILE_LOCATION }}
+          remote_filepath: ${{ vars.REMOTE_FILEPATH  }}
+          
+#      - name: Create symlink for executable jar
+#        uses: teachtechswot/platform/.github/actions/execute-remote-command@main
+#        with:
+#          remote_username: ${{ secrets.REMOTE_SWOT_USERNAME  }}
+#          remote_host: ${{ secrets.REMOTE_SWOT_SERVER  }}
+#          remote_port: ${{ secrets.REMOTE_SWOT_PORT  }}
+#          remote_ssh_key: ${{ secrets.REMOTE_SWOT_SSH_KEY  }}
+#          remote_cmd: |
+#            cd ${{ vars.REMOTE_SWOT_FILEPATH  }}/${{ env.APPLICATION_NAME }}; 
+#            rm ./${{ env.APPLICATION_NAME }}.jar;
+#            ln ./${{ needs.create-versioned-package.outputs.package-name }} ./${{ env.APPLICATION_NAME }}.jar;  
+  
             
   print-details:
     needs: [generate-filename]
