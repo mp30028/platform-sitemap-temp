@@ -90,7 +90,7 @@ jobs:
       - name: Create symlink to released sitemap
         uses: mp30028/platform-sitemap-temp/.github/actions/execute-remote-command@main
         with:
-          remote_username: ${{ secrets.REMOT_USERNAME  }}
+          remote_username: ${{ secrets.REMOTE_USERNAME  }}
           remote_host: ${{ secrets.REMOTE_SERVER  }}
           remote_port: ${{ secrets.REMOTE_PORT  }}
           remote_ssh_key: ${{ secrets.REMOTE_SSH_KEY  }}
