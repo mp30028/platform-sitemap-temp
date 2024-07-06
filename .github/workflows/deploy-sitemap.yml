@@ -3,6 +3,8 @@ name: Deploy swot-sitemap
 env:
   FILENAME: sitemap.xml
   FILE_LOCATION: swot-sitemap
+  FILE_LINK_LOCATION: /mnt/zonesoft-volume-2/data/api-storage/
+  FILE_LINK: sitemap.xml.current-sitemap.UPLOADED
 
 on:
  workflow_dispatch:
@@ -30,7 +32,7 @@ jobs:
             extension="${FILENAME##*.}"            
             echo "value=$prefix-$suffix.$extension" >> $GITHUB_OUTPUT;
 
-  create-release-sitemap:
+  create-release:
     needs: [generate-filename]
     runs-on: ubuntu-latest
     steps:    
@@ -57,7 +59,7 @@ jobs:
           path: /staging
           compression-level: 0 # no compression
   
-  copy-sitemap-to-remote:
+  push-release-to-remote:
 #    if: ${{ github.ref_name == 'main' && github.event_name == 'push' }}
     needs: [generate-filename]    
     runs-on: ubuntu-latest
@@ -75,7 +77,6 @@ jobs:
           name: ${{ needs.generate-filename.outputs.release_filename }}
           path: staging/${{ env.FILE_LOCATION }}
 
-
       - name: sftp staged artifacts to remote
         uses: mp30028/platform-sitemap-temp/.github/actions/sftp-to-remote@seed_with_artifacts_from_platform-sitemap
         with:
@@ -86,27 +87,27 @@ jobs:
           local_filepath: staging/${{ env.FILE_LOCATION }}
           remote_filepath: ${{ vars.REMOTE_FILEPATH  }}
           
-#      - name: Create symlink for executable jar
-#        uses: teachtechswot/platform/.github/actions/execute-remote-command@main
-#        with:
-#          remote_username: ${{ secrets.REMOTE_SWOT_USERNAME  }}
-#          remote_host: ${{ secrets.REMOTE_SWOT_SERVER  }}
-#          remote_port: ${{ secrets.REMOTE_SWOT_PORT  }}
-#          remote_ssh_key: ${{ secrets.REMOTE_SWOT_SSH_KEY  }}
-#          remote_cmd: |
-#            cd ${{ vars.REMOTE_SWOT_FILEPATH  }}/${{ env.APPLICATION_NAME }}; 
-#            rm ./${{ env.APPLICATION_NAME }}.jar;
-#            ln ./${{ needs.create-versioned-package.outputs.package-name }} ./${{ env.APPLICATION_NAME }}.jar;  
+      - name: Create symlink to released sitemap
+        uses: mp30028/platform-sitemap-temp/.github/actions/execute-remote-command@main
+        with:
+          remote_username: ${{ secrets.REMOT_USERNAME  }}
+          remote_host: ${{ secrets.REMOTE_SERVER  }}
+          remote_port: ${{ secrets.REMOTE_PORT  }}
+          remote_ssh_key: ${{ secrets.REMOTE_SSH_KEY  }}
+          remote_cmd: |
+            cd ${{ env.FILE_LINK_LOCATION }}; 
+            rm ./${{ env.FILE_LINK }};
+            ln ${{vars.REMOTE_FILEPATH}}/${{env.FILE_LOCATION}}/${{needs.generate-filename.outputs.release_filename}} ./${{env.FILE_LINK}};  
   
             
-  print-details:
-    needs: [generate-filename]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Print Details
-        id: printed_details
-        shell: bash
-        run: |
-          echo "FILENAME = $FILENAME";
-          #echo "FILENAME_EXTENSION = $FILENAME_EXTENSION";
-          echo "release_filename = ${{ needs.generate-filename.outputs.release_filename }}";
+#  print-details:
+#    needs: [generate-filename]
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Print Details
+#        id: printed_details
+#        shell: bash
+#        run: |
+#          echo "FILENAME = $FILENAME";
+#          #echo "FILENAME_EXTENSION = $FILENAME_EXTENSION";
+#          echo "release_filename = ${{ needs.generate-filename.outputs.release_filename }}";
