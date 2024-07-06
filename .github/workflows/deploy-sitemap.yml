@@ -31,7 +31,7 @@ jobs:
             echo "value=$prefix-$suffix.$extension" >> $GITHUB_OUTPUT;
 
   create-release-sitemap:
-    needs: [generate-filename]
+#    needs: [generate-filename]
     runs-on: ubuntu-latest
     steps:    
 
@@ -59,7 +59,7 @@ jobs:
   
   copy-sitemap-to-remote:
 #    if: ${{ github.ref_name == 'main' && github.event_name == 'push' }}
-    needs: [ create-release-sitemap]    
+#    needs: [generate-filename]    
     runs-on: ubuntu-latest
     steps:
       - name: Checkout this repository
